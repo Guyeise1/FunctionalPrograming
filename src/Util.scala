@@ -36,18 +36,18 @@ object Util {
   }
 	// entropy
   def entropy(arr: Array[Double]): Double = {
-    -arr.groupBy(x => x).map(e => (e._1, e._2.length / arr.length.toDouble)).values.map(v => v * Math.log10(v) / Math.log10(2) ).sum
+    probs(arr).map(p => -p * Math.log10(p) / Math.log10(2)).sum
   }
 
 	// mu
   def mu(arr: Array[Double]): Double = {
-    arr.sum / arr.length
+    arr.zip(probs(arr)).map(x => x._1 * x._2).sum
   }
 
   // variance
   def variance(arr: Array[Double]): Double = {
-    val e = mu(arr)
-    arr.map(d => Math.abs(d - e)).sum
+    val m = mu(arr)
+    (arr zip probs(arr)).map(x => x._2 * (x._1 - m) * (x._1 - m)).sum
   }
 
 	// zscore
