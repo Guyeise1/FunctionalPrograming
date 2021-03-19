@@ -1,6 +1,7 @@
 object Util {
 
-	// max
+
+  // max
   def max[A](lst: List[A], comparator: (A, A) => Int): A = {
     if(lst.length == 1) {
       lst.head
@@ -51,7 +52,9 @@ object Util {
   }
 
 	// zscore
-
+  def zscore(arr: Array[Double], x: Double) : Double = {
+    (x - mu(arr)) / math.sqrt(variance(arr))
+  }
 	// cov
 
 	// pearson
