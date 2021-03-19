@@ -60,25 +60,25 @@ object MainTrain {
     if(vari!=Util.variance(xs))
       println("variance function is not RT (-5)")
 
-//    xs=Array(1.0,1.0,3.0,4.0,4.0)
-//    val z=Util.zscore(xs,3.0)
+    xs=Array(1.0,1.0,3.0,4.0,4.0)
+    val z=Util.zscore(xs,3.0)
+
+    if(z<(-0.478)-0.001 || z>(-0.478)+0.001)
+      println("wrong result for z score function (-5)")
 //
-//    if(z<(-0.478)-0.001 || z>(-0.478)+0.001)
-//      println("wrong result for z score function (-5)")
-//
-//    xs=Array(1.0,2.0,3.0,4.0,5.0)
-//    ys=Array(3.0,6.0,9.0,12.0,15.0)
-//    if(Util.pearson(xs,ys)<1.0-0.0001 )// result should be 1 or very close to 1
-//      println("wrong result for pearson function (-5)")
-//
-//    ys=Array(-3.0,-6.0,-9.0,-12.0,-15.0)
-//    if(Util.pearson(xs,ys)> (-1.0+0.0001) )// result should be -1 or very close to -1
-//      println("wrong result for pearson function (-5)")
-//
-//    ys=Array(3.0,-6.0,9.0,-12.0,15.0)
-//    if(Util.pearson(xs,ys)> (0.2601+0.0001) || Util.pearson(xs,ys)<(0.2601-0.0001))
-//      println("wrong result for pearson function (-5)")
-//
+    xs=Array(1.0,2.0,3.0,4.0,5.0)
+    ys=Array(3.0,6.0,9.0,12.0,15.0)
+    if(Util.pearson(xs,ys)<1.0-0.0001 )// result should be 1 or very close to 1
+      println("wrong result for pearson function (-5)")
+
+    ys=Array(-3.0,-6.0,-9.0,-12.0,-15.0)
+    if(Util.pearson(xs,ys)> (-1.0+0.0001) )// result should be -1 or very close to -1
+      println("wrong result for pearson function (-5)")
+
+    ys=Array(3.0,-6.0,9.0,-12.0,15.0)
+    if(Util.pearson(xs,ys)> (0.2601+0.0001) || Util.pearson(xs,ys)<(0.2601-0.0001))
+      println("wrong result for pearson function (-5)")
+
 //    val pnts=Array(new Point(0,0.1),new Point(1,2.01),new Point(5.1,10))
 //    val l=new Line(pnts)
 //    if(l.a>1.94+0.01 || l.a<1.94-0.01)
