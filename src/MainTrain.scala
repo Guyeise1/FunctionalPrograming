@@ -79,17 +79,17 @@ object MainTrain {
     if(Util.pearson(xs,ys)> (0.2601+0.0001) || Util.pearson(xs,ys)<(0.2601-0.0001))
       println("wrong result for pearson function (-5)")
 
-//    val pnts=Array(new Point(0,0.1),new Point(1,2.01),new Point(5.1,10))
-//    val l=new Line(pnts)
-//    if(l.a>1.94+0.01 || l.a<1.94-0.01)
-//      println("wrong result for line.a (-5)")
-//    if(l.b>0.085+0.001 || l.b<0.085-0.001)
-//      println("wrong result for line.b (-5)")
-//
-//    if(l.f(4)>7.85+0.01 || l.f(4)<7.85-.01)
-//      println("wrong result for line.f (-5)")
-//    if(l.dist(new Point(4,8))>0.14+0.01 || l.dist(new Point(4,8))<0.14-.01)
-//      println("wrong result for line.dist (-5)")
+    val pnts=Array(new Point(0,0.1),new Point(1,2.01),new Point(5.1,10))
+    val l=new Line(pnts)
+    if(l.a>1.94+0.01 || l.a<1.94-0.01)
+      println("wrong result for line.a (-5)")
+    if(l.b>0.085+0.001 || l.b<0.085-0.001)
+      println("wrong result for line.b (-5)")
+
+    if(l.f(4)>7.85+0.01 || l.f(4)<7.85-.01)
+      println("wrong result for line.f (-5)")
+    if(l.dist(new Point(4,8))>0.14+0.01 || l.dist(new Point(4,8))<0.14-.01)
+      println("wrong result for line.dist (-5)")
 
     println("done")
   }
