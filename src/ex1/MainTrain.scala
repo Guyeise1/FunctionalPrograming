@@ -1,3 +1,5 @@
+package ex1
+
 object MainTrain {
 
   def main(args: Array[String]): Unit = {
