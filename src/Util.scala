@@ -1,19 +1,23 @@
+import scala.annotation.tailrec
+
 object Util {
 
 
   // max
   def max[A](lst: List[A], comparator: (A, A) => Int): A = {
-    if (lst.length == 1) {
-      lst.head
-    } else {
-      val (l1, l2) = lst.splitAt(lst.length / 2)
-      val (r1, r2) = (max(l1, comparator), max(l2, comparator))
-      if (comparator(r1, r2) > 0) {
-        r1
+    @tailrec
+    def loop(lst: List[A], m: A, comperator: (A,A) => Int): A = {
+      if (lst.isEmpty) {
+        m
       } else {
-        r2
+        if (comparator(m, lst.head) > 0) {
+          loop(lst.tail, m, comparator)
+        } else {
+          loop(lst.tail, lst.head, comparator)
+        }
       }
     }
+    loop(lst, lst.head, comparator)
   }
 
   // map
