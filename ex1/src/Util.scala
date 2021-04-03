@@ -1,5 +1,3 @@
-package ex1
-
 import scala.annotation.tailrec
 
 object Util {

@@ -1,6 +1,4 @@
-package ex1
-
-import ex1.Util.{cov, mu, variance}
+import Util._
 
 class Line(ps: Array[Point]) {
   private val x = ps.map(p => p.x)
