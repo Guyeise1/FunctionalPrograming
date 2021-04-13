@@ -6,7 +6,7 @@ object Util {
   // max
   def max[A](lst: List[A], comparator: (A, A) => Int): A = {
     @tailrec
-    def loop(lst: List[A], m: A, comperator: (A,A) => Int): A = {
+    def loop(lst: List[A], m: A, comparator: (A,A) => Int): A = {
       if (lst.isEmpty) {
         m
       } else {
@@ -47,6 +47,10 @@ object Util {
     probs(arr).map(p => -p * Math.log10(p) / Math.log10(2)).sum
   }
 
+  def avarage(xs: Array[Double]): Double = {
+    xs.sum / xs.length;
+  }
+
   // mu
   def mu(arr: Array[Double]): Double = {
     arr.zip(probs(arr)).distinct.map(x => x._1 * x._2).sum
@@ -74,4 +78,6 @@ object Util {
   def pearson(x: Array[Double], y: Array[Double]): Double = {
     cov(x,y) / math.sqrt(variance(x) * variance(y))
   }
+
+  def standardDeviation(arr: Array[Double]): Double = math.sqrt(variance(arr))
 }
