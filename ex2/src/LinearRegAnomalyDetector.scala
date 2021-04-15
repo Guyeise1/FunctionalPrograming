@@ -30,10 +30,10 @@ object LinearRegAnomalyDetector extends  AnomalyDetector {
 
     def maxDist(linearFunction: Double => Double, xs: Array[Double], ys: Array[Double]): Double = {
       val points = xs zip ys
-      points.map(p => math.pow(linearFunction(p._1) - p._2, 2)).max
+      points.map(p => math.abs(linearFunction(p._1) - p._2)).max
     }
 
-    def serialize(model: Set[((String,String), Double=>Double, Double)]): Map[String, String] = {
+    def serialize(model: Array[((String,String), Double=>Double, Double)]): Map[String, String] = {
       def serializeLinearFunction(func: Double=> Double): String = {
         val constantTerm = func(0)
         val slop = func(1) - constantTerm
@@ -49,13 +49,13 @@ object LinearRegAnomalyDetector extends  AnomalyDetector {
 
     val linearFunctions = correlativeFeatures.map(k => (k, linearFit(normal.features(k._1).toArray, normal.features(k._2).toArray)))
 
-    val ret = linearFunctions.map(e => (e._1,e._2, maxDist(e._2, normal.features(e._1._1).toArray, normal.features(e._1._2).toArray)))
+    val ret = linearFunctions.map(e => (e._1,e._2, maxDist(e._2, normal.features(e._1._1).toArray, normal.features(e._1._2).toArray))).toArray
 
     return serialize(ret)
   }
 
   override def detect(model: Map[String, String], test: TimeSeries): Vector[(String, Int)] = {
-    def deserialize(model: Map[String, String]): Set[((String,String), Double=>Double, Double)] = {
+    def deserialize(model: Map[String, String]): Array[((String,String), Double=>Double, Double)] = {
       def deserializeLinearFunction(strFunc: String): Double => Double = {
         val split = strFunc.split(",")
         return x=> split(0).toDouble * x + split(1).toDouble
@@ -64,7 +64,7 @@ object LinearRegAnomalyDetector extends  AnomalyDetector {
       val limits = model("limits").split(" ").map(l => l.toDouble): Array[Double]
       val functions = model("functions").split(" ").map(f => deserializeLinearFunction(f)): Array[Double => Double]
 
-      (keys zip functions zip limits).map(e => (e._1._1, e._1._2, e._2)).toSet
+      (keys zip functions zip limits).map(e => (e._1._1, e._1._2, e._2))
 
     }
     val s_model = deserialize(model)
