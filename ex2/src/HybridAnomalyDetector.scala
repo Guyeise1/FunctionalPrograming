@@ -89,7 +89,7 @@ object HybridAnomalyDetector extends  AnomalyDetector {
       badIndexedXS.map(t => (e._1,t._2))
     }).toVector
 
-    highCorrelationResult concat lowCorrelationResult concat noCorrelationResult
+    highCorrelationResult ++ lowCorrelationResult ++ noCorrelationResult
   }
 
 }

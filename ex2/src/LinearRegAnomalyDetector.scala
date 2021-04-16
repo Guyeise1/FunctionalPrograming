@@ -8,9 +8,9 @@ object LinearRegAnomalyDetector extends  AnomalyDetector {
     }
 
     def serialize(model: Array[((String,String), Double=>Double, Double)]): Map[String, String] = {
-      val keys = model.map( e => e._1).map( e => e._1 + "," + e._2).reduce((x1,x2) => x1 + " " + x2)
-      val limits = model.map(e => e._3.toString).reduce((x1,x2) => x1 + " " + x2)
-      val functions = model.map(e => Util.serializeLinearFunction(e._2)).reduce((f1,f2) => f1 + " " + f2)
+      val keys = model.map( e => e._1).map( e => e._1 + "," + e._2).mkString(" ")
+      val limits = model.map(e => e._3.toString).mkString(" ")
+      val functions = model.map(e => Util.serializeLinearFunction(e._2)).mkString(" ")
       return Map("keys" -> keys, "limits" -> limits, "functions" -> functions)
     }
 

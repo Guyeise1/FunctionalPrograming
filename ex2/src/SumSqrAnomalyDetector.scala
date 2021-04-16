@@ -3,8 +3,8 @@
 object SumSqrAnomalyDetector extends  AnomalyDetector {
   override def learn(normal: TimeSeries): Map[String, String] = {
     def serialize(model: Array[((String,String), Double)]): Map[String, String] = {
-      val keys = model.map(e => e._1).map(e => e._1 + "," + e._2).reduce((a1,a2) => a1 +" "+ a2)
-      val limits = model.map(e => e._2.toString).reduce((d1,d2) => d1 + " " + d2)
+      val keys = model.map(e => e._1).map(e => e._1 + "," + e._2).mkString(" ")
+      val limits = model.map(e => e._2.toString).mkString(" ")
       return Map("keys" -> keys, "limits" -> limits)
     }
 
@@ -25,7 +25,7 @@ object SumSqrAnomalyDetector extends  AnomalyDetector {
     }
 
     val myModel = deserialize(model)
-    myModel.map( e => {
+    myModel.flatMap( e => {
       val x = e._1._1
       val y = e._1._2
       val limit = e._2
@@ -35,6 +35,6 @@ object SumSqrAnomalyDetector extends  AnomalyDetector {
       val indexedPoints = points.indices zip points
       val indexedBadPoints = indexedPoints.filter(ip => Util.distances(ip._2, points).sum > limit)
       indexedBadPoints.map(ibp => (x+","+y, ibp._1))
-    }).map(x => x.toVector).reduce((v1,v2) => v1 concat v2)
+    }).toVector
   }
 }

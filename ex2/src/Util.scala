@@ -95,9 +95,9 @@ object Util {
       return Map.empty
     }
     else {
-      val fec = firstElementCorrelation(elements).map(e => ((elements.head._1, e._1), e._2)).toMap
+      val fec = firstElementCorrelation(elements).map(e => ((elements.head._1, e._1), e._2))
       val recCall = correlation(elements.tail)
-      return fec.concat(recCall)
+      return (fec ++ recCall).toMap
     }
   }
 
