@@ -6,10 +6,10 @@ object HybridAnomalyDetector extends  AnomalyDetector {
 
   override def learn(normal: TimeSeries): Map[String, String] = {
     def serialize(modelHighCorrelation: Array[((String, String),Double=>Double, Double)],
-                  modelLowCorrelation: Array[((String, String), Double)],
+                  modelLowCorrelation: Array[((String, String),(Double,Double), Double)],
                   modelNoCorrelation: Array[(String, Double)]): Map[String, String] = {
       val sHigh = modelHighCorrelation.map(e => List(e._1._1, e._1._2,Util.serializeLinearFunction(e._2), e._3).mkString(",")).mkString(" ")
-      val sLow = modelLowCorrelation.map( e => List(e._1._1, e._1._2, e._2).mkString(",")).mkString(" ")
+      val sLow = modelLowCorrelation.map( e => List(e._1._1, e._1._2, e._2._1, e._2._2, e._3).mkString(",")).mkString(" ")
       val sNo = modelNoCorrelation.map( e => List(e._1, e._2).mkString(",")).mkString(" ")
 
       Map("high" -> sHigh, "low" -> sLow, "no" -> sNo)
@@ -38,16 +38,18 @@ object HybridAnomalyDetector extends  AnomalyDetector {
       val ys = normal.features(y)
       val points = xs zip ys
 
-      val radius = points.map(p => {
-         points.map(o => Util.squareDistance(p, o)).max
-      }).min
+      val (center, radius) = points.map(p => {
+         val radius = points.map(o => Util.squareDistance(p, o)).max
+        (p, radius)
+      }).minBy(t => t._2)
 
-      ((x,y), radius)
+
+      ((x,y), center, radius)
     }).toArray
 
     val modelNoCorrelation = noCorrelation.map( x => {
       val xs = normal.features(x)
-      (x, xs.map( e => Util.zscore(xs.toArray, e)).max)
+      (x, xs.map( e => math.abs(Util.zscore(xs.toArray, e))).max)
     })
 
 
@@ -58,10 +60,10 @@ object HybridAnomalyDetector extends  AnomalyDetector {
   override def detect(model: Map[String, String], test: TimeSeries): Vector[(String, Int)] = {
     def deserialize(model: Map[String, String]): (
       Array[((String, String),Double=>Double, Double)],
-      Array[((String, String), Double)],
+      Array[((String, String),(Double,Double), Double)],
       Array[(String, Double)]) = {
 
-      val lowModel = model("low").split(" ").map( e => e.split(",")).filter(x => x(0) != "").map(e => ((e(0), e(1)), e(2).toDouble))
+      val lowModel = model("low").split(" ").map( e => e.split(",")).filter(x => x(0) != "").map(e => ((e(0), e(1)),(e(2).toDouble, e(3).toDouble), e(4).toDouble))
       val noModel = model("no").split(" ").map(e => e.split(",")).filter(x => x(0) != "").map(e => (e(0), e(1).toDouble))
       val highModel = model("high").split(" ").map(e=> e.split(",")).filter(x => x(0) != "").map( e => ((e(0), e(1)), Util.deserializeLinearFunction(e(2)), e(3).toDouble))
       (highModel, lowModel, noModel)
@@ -74,8 +76,8 @@ object HybridAnomalyDetector extends  AnomalyDetector {
       val (x,y) = e._1
       val (xs,ys) = (test.features(x).toArray, test.features(y).toArray)
       val points = xs zip ys
-      val limit = e._2
-      val center = points.minBy( p => points.map( o => Util.squareDistance(p,o)).max)
+      val limit = e._3
+      val center = e._2
       val indexedPoints = points zip points.indices
       indexedPoints.filter( p => Util.squareDistance(p._1, center) > limit).map(t => (x + "," + y, t._2))
     }).toVector
@@ -83,7 +85,7 @@ object HybridAnomalyDetector extends  AnomalyDetector {
       val xs = test.features(e._1).toArray
       val limit = e._2
       val indexedXS = xs zip xs.toList.indices
-      val badIndexedXS = indexedXS.filter( x => Util.zscore(xs, x._1) > limit)
+      val badIndexedXS = indexedXS.filter( x => math.abs(Util.zscore(xs, x._1)) > limit)
       badIndexedXS.map(t => (e._1,t._2))
     }).toVector
 
