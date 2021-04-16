@@ -39,12 +39,12 @@ object MainTrain {
 
   // LinearRegAnomalyDetector test
   def testLRAD():Unit={
-    val ts=new TimeSeries("src/train3.csv")
+    val ts=new TimeSeries("D:\\Users\\guyei\\Git\\Colman\\FP\\ex2\\src\\train3.csv")
     val model=LinearRegAnomalyDetector.learn(ts)
     val r0=LinearRegAnomalyDetector.detect(model,ts)
     if(r0.length>0)
       println("there should not be any anomalies detected here (-10)")
-    val r1=LinearRegAnomalyDetector.detect(model,new TimeSeries("src/test3.csv"))
+    val r1=LinearRegAnomalyDetector.detect(model,new TimeSeries("D:\\Users\\guyei\\Git\\Colman\\FP\\ex2\\src\\test3.csv"))
     if(r1.length!=2)
       println("wrong number of reported anomalies (-10)")
     if(!r1.contains(("A,B",5)) || !r1.contains(("C,D",13)))
@@ -53,12 +53,12 @@ object MainTrain {
 
   // SumSqrAnomalyDetector test
   def testSSD():Unit={
-    val ts=new TimeSeries("train3.csv")
+    val ts=new TimeSeries("D:\\Users\\guyei\\Git\\Colman\\FP\\ex2\\src\\train3.csv")
     val model=SumSqrAnomalyDetector.learn(ts)
     val r0=SumSqrAnomalyDetector.detect(model,ts)
     if(r0.length>0)
       println("there should not be any anomalies detected here (-10)")
-    val r1=SumSqrAnomalyDetector.detect(model,new TimeSeries("test3.csv"))
+    val r1=SumSqrAnomalyDetector.detect(model,new TimeSeries("D:\\Users\\guyei\\Git\\Colman\\FP\\ex2\\src\\test3.csv"))
     if(r1.length!=2)
       println("wrong number of reported anomalies (-10)")
     if(!r1.contains(("A,B",5)) || !r1.contains(("A,B",18)))
@@ -67,13 +67,13 @@ object MainTrain {
   }
   // HybridAnomalyDetector test
   def testHAD():Unit={
-    val ts=new TimeSeries("train4.csv")
+    val ts=new TimeSeries("D:\\Users\\guyei\\Git\\Colman\\FP\\ex2\\src\\train4.csv")
     val model=HybridAnomalyDetector.learn(ts)
     val r0=HybridAnomalyDetector.detect(model,ts)
 
     if(r0.length>0)
       println("there should not be any anomalies detected here (-10)")
-    val r1=HybridAnomalyDetector.detect(model,new TimeSeries("test4.csv"))
+    val r1=HybridAnomalyDetector.detect(model,new TimeSeries("D:\\Users\\guyei\\Git\\Colman\\FP\\ex2\\src\\test4.csv"))
 
 
     if(r1.length!=5)
@@ -86,9 +86,9 @@ object MainTrain {
 
 //    testTimeSeries()
 //    testZAD()
-    testLRAD()
-//    testSSD()
-//    testHAD()
+//    testLRAD()
+   // testSSD()
+    testHAD()
 
     println("done")
   }

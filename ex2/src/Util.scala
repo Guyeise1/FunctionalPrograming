@@ -80,4 +80,56 @@ object Util {
   }
 
   def standardDeviation(arr: Array[Double]): Double = math.sqrt(variance(arr))
+
+  private def firstElementCorrelation(elements: Map[String, Vector[Double]]): Array[(String, Double)] = {
+    elements.tail.map(e => (e._1,
+      Util.cov(elements.head._2.toArray, e._2.toArray)
+        / Util.standardDeviation(e._2.toArray)
+        / Util.standardDeviation(elements.head._2.toArray)
+    )).toArray
+  }
+
+
+  def correlation(elements: Map[String, Vector[Double]]): Map[(String, String), Double] = {
+    if(elements.isEmpty) {
+      return Map.empty
+    }
+    else {
+      val fec = firstElementCorrelation(elements).map(e => ((elements.head._1, e._1), e._2)).toMap
+      val recCall = correlation(elements.tail)
+      return fec.concat(recCall)
+    }
+  }
+
+  def distances(point: (Double,Double), points: Vector[(Double,Double)]): Map[(Double,Double), Double] = {
+    points.map( p => (p, math.pow(p._1 - point._1, 2) + math.pow(p._2 - point._2, 2))).toMap
+  }
+
+  def maxDistance(xs: Vector[Double], ys: Vector[Double]): Double = {
+    val points = xs zip ys
+    points.map(p => distances(p, points).values.sum).max
+  }
+
+  def squareDistance(p1: (Double,Double), p2: (Double,Double)): Double = math.pow(p1._1 - p2._1, 2) + math.pow(p1._2 - p2._2, 2)
+
+  def linearFit(xs: Array[Double], ys: Array[Double]) : Double => Double = {
+    val slope = Util.cov(xs, ys) / Util.variance(xs)
+    val constantTerm = Util.avarage(ys) - slope * Util.avarage(xs)
+    x => slope * x + constantTerm
+  }
+
+  def serializeLinearFunction(func: Double=> Double): String = {
+    val constantTerm = func(0)
+    val slop = func(1) - constantTerm
+    return slop + "," + constantTerm
+  }
+
+  def deserializeLinearFunction(strFunc: String): Double => Double = {
+    val split = strFunc.split(",")
+    return x=> split(0).toDouble * x + split(1).toDouble
+  }
+
+  def distanceFromLinearFunction(point: (Double,Double), f: (Double => Double)): Double = math.abs(f(point._1) - point._2)
+
+
 }
