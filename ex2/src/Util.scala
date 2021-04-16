@@ -48,7 +48,7 @@ object Util {
   }
 
   def avarage(xs: Array[Double]): Double = {
-    xs.sum / xs.length;
+    xs.sum / xs.length
   }
 
   // mu
@@ -101,13 +101,13 @@ object Util {
     }
   }
 
-  def distances(point: (Double,Double), points: Vector[(Double,Double)]): Map[(Double,Double), Double] = {
-    points.map( p => (p, math.pow(p._1 - point._1, 2) + math.pow(p._2 - point._2, 2))).toMap
+  def distances(point: (Double,Double), points: Vector[(Double,Double)]): Array[Double] = {
+    points.filter(p => p != point).map( p => squareDistance(p, point)).toArray
   }
 
   def maxDistance(xs: Vector[Double], ys: Vector[Double]): Double = {
     val points = xs zip ys
-    points.map(p => distances(p, points).values.sum).max
+    points.map(p => distances(p, points).sum).max
   }
 
   def squareDistance(p1: (Double,Double), p2: (Double,Double)): Double = math.pow(p1._1 - p2._1, 2) + math.pow(p1._2 - p2._2, 2)
@@ -129,7 +129,7 @@ object Util {
     return x=> split(0).toDouble * x + split(1).toDouble
   }
 
-  def distanceFromLinearFunction(point: (Double,Double), f: (Double => Double)): Double = math.abs(f(point._1) - point._2)
+  def distanceFromLinearFunction(point: (Double,Double), f: Double => Double): Double = math.abs(f(point._1) - point._2)
 
 
 }
