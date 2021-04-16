@@ -19,8 +19,8 @@ object SumSqrAnomalyDetector extends  AnomalyDetector {
 
   override def detect(model: Map[String, String], test: TimeSeries): Vector[(String, Int)] = {
     def deserialize(model: Map[String, String]): Array[((String,String), Double)] = {
-      val keys = model("keys").split(" ").map(x => x.split(",")).map(c => (c(0), c(1)))
-      val limits = model("limits").split(" ").map(l => l.toDouble)
+      val keys = model("keys").split(" ").map(x => x.split(",")).filter(x => x(0) != "").map(c => (c(0), c(1)))
+      val limits = model("limits").split(" ").filter(x => x!= "").map(l => l.toDouble)
       keys zip limits
     }
 

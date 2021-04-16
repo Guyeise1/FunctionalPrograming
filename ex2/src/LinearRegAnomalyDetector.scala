@@ -25,9 +25,9 @@ object LinearRegAnomalyDetector extends  AnomalyDetector {
 
   override def detect(model: Map[String, String], test: TimeSeries): Vector[(String, Int)] = {
     def deserialize(model: Map[String, String]): Array[((String,String), Double=>Double, Double)] = {
-      val keys = model("keys").split(" ").map(p => p.split(",")).map(p => (p(0), p(1))): Array[(String, String)]
-      val limits = model("limits").split(" ").map(l => l.toDouble): Array[Double]
-      val functions = model("functions").split(" ").map(f => Util.deserializeLinearFunction(f)): Array[Double => Double]
+      val keys = model("keys").split(" ").map(p => p.split(",")).filter(x => x(0)!= "").map(p => (p(0), p(1))): Array[(String, String)]
+      val limits = model("limits").split(" ").filter(x => x!= "").map(l => l.toDouble): Array[Double]
+      val functions = model("functions").split(" ").filter(x => x!= "").map(f => Util.deserializeLinearFunction(f))
 
       (keys zip functions zip limits).map(e => (e._1._1, e._1._2, e._2))
 
