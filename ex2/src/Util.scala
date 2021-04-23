@@ -58,8 +58,8 @@ object Util {
 
   // variance
   def variance(arr: Array[Double]): Double = {
-    val m = mu(arr)
-    (arr zip probs(arr)).map(x => x._2 * (x._1 - m) * (x._1 - m)).sum
+    val m = avarage(arr)
+   arr.map(x => math.pow(x - m,2) ).sum/arr.length
   }
 
   // zscore
@@ -69,8 +69,8 @@ object Util {
 
   // cov
   def cov(x: Array[Double], y: Array[Double]): Double = {
-    val mx = mu(x)
-    val my = mu(y)
+    val mx = avarage(x)
+    val my = avarage(y)
     (x zip y).map(e => (e._1 - mx) * (e._2 - my)).sum / x.length
   }
 
@@ -82,10 +82,7 @@ object Util {
   def standardDeviation(arr: Array[Double]): Double = math.sqrt(variance(arr))
 
   private def firstElementCorrelation(elements: Map[String, Vector[Double]]): Array[(String, Double)] = {
-    elements.tail.map(e => (e._1,
-      Util.cov(elements.head._2.toArray, e._2.toArray)
-        / Util.standardDeviation(e._2.toArray)
-        / Util.standardDeviation(elements.head._2.toArray)
+    elements.tail.map(e => (e._1,Util.pearson(elements.head._2.toArray, e._2.toArray)
     )).toArray
   }
 
@@ -121,11 +118,11 @@ object Util {
   def serializeLinearFunction(func: Double=> Double): String = {
     val constantTerm = func(0)
     val slop = func(1) - constantTerm
-    return slop + "," + constantTerm
+    return slop + "w" + constantTerm
   }
 
   def deserializeLinearFunction(strFunc: String): Double => Double = {
-    val split = strFunc.split(",")
+    val split = strFunc.split("w")
     return x=> split(0).toDouble * x + split(1).toDouble
   }
 
