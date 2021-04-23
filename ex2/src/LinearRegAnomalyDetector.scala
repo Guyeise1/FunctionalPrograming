@@ -14,7 +14,7 @@ object LinearRegAnomalyDetector extends  AnomalyDetector {
       return Map("keys" -> keys, "limits" -> limits, "functions" -> functions)
     }
 
-    val correlativeFeatures = Util.correlation(normal.features).filter(e => math.abs(e._2) >= 0.9).groupBy(e => e._1).values.map(l => l.maxBy(t => t._2)).map(e => e._1)
+    val correlativeFeatures = Util.correlation(normal.features).filter(e => math.abs(e._2) >= 0.9).groupBy(_._1._1).values.map(_.maxBy(_._2)).map(_._1)
 
     val linearFunctions = correlativeFeatures.map(k => (k, Util.linearFit(normal.features(k._1).toArray, normal.features(k._2).toArray)))
 
