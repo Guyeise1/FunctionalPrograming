@@ -1,5 +1,6 @@
 
 
+import scala.collection.immutable.ListMap
 import scala.io.Source
 
 class TimeSeries(csvFileName:String) {
@@ -9,16 +10,18 @@ class TimeSeries(csvFileName:String) {
     try {
       val lineItr = file.getLines()
       val titles = lineItr.next().split(',')
-      var ret = titles.map(t => (t, Vector[Double]())).toMap
+      var values = titles.map(t => (t, Vector[Double]())).toMap
       val splitLines = lineItr.map(e => e.split(','))
       splitLines.foreach( l => {
         titles.zip(l).foreach( z => {
-          val v = ret(z._1) :+ z._2.toDouble
-          ret = ret + (z._1 -> v)
+          val v = values(z._1) :+ z._2.toDouble
+          values = values + (z._1 -> v)
         })
       })
 
-      ret
+      var orderedValues: ListMap[String, Vector[Double]] = new ListMap
+      titles.foreach( t => orderedValues = orderedValues + (t -> values(t)))
+      return orderedValues
     } finally {
       file.close()
     }
