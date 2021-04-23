@@ -41,7 +41,7 @@ object LinearRegAnomalyDetector extends  AnomalyDetector {
       val a = e._1._1
       val b = e._1._2
       val func = e._2
-      val limit = e._3
+      val limit = e._3 + 0.001f
       val points = test.features(a).toList.indices zip (test.features(a) zip test.features(b))
       val bad_points = points.filter(p => math.abs(func(p._2._1) - p._2._2) > limit)
       bad_points.map(p => (a + "," + b, p._1)).toVector
