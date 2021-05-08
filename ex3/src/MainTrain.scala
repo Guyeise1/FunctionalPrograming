@@ -4,7 +4,7 @@ object MainTrain {
 
   // a simple test for time series
   def testTimeSeries():Unit={
-    val ts=new TimeSeries("train.csv")
+    val ts=new TimeSeries("ex3/train.csv")
     val a=Vector(1,2,3,4,5)
     val a1=Vector(1,2)
     val a2=Vector(3,4,5)
@@ -40,7 +40,7 @@ object MainTrain {
   def main(args: Array[String]): Unit = {
 
     testTimeSeries()
-    val ts=new TimeSeries("train2.csv")
+    val ts=new TimeSeries("ex3/train2.csv")
     testEAD(ts,1)
     testEAD(ts,3)
     testEAD(ts,5)

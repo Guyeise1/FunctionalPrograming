@@ -38,15 +38,20 @@ object Util {
   }
 
   // probs
-  def probs(xs: Array[Double]): Array[Double] = {
-    val p = xs.groupBy(x => x).map(e => (e._1, e._2.length / xs.length.toDouble))
-    xs.map(x => p(x))
+  def probs(arr:Array[Double]):Array[Double] = {
+    val mapElementCount = arr.groupBy(identity).mapValues(_.length)
+    return arr.map(item => 1.0 * mapElementCount(item) / arr.length)
   }
 
   // entropy
-  def entropy(arr: Array[Double]): Double = {
-    math abs probs(arr).map(p => -p * Math.log10(p) / Math.log10(2)).sum
+  def entropy(arr:Array[Double]):Double = {
+    (arr zip probs(arr))
+      .distinct
+      .map(_._2)
+      .map(p => -p * Math.log(p) / Math.log(2))
+      .sum
   }
+
 
   def avarage(xs: Array[Double]): Double = {
     xs.sum / xs.length
@@ -136,9 +141,11 @@ object Util {
    *         index is the index of the removed element.
    */
   def maxEntropy(arr: Array[Double]): (Double, Int) = {
+    val arrEntropy = Util.entropy(arr)
     arr.indices
       .map(i => (removeElement(arr, i), i))
-      .map(e => (entropy(e._1), e._2))
+      .map(e => (arrEntropy - entropy(e._1), e._2))
+//      .map(e => (math abs e._1, e._2))
       .maxBy(_._1)
   }
 
