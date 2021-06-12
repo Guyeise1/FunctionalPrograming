@@ -1,4 +1,4 @@
-import java.util.concurrent.ExecutorService
+import java.util.concurrent.{Callable, ExecutorService}
 import scala.collection.mutable.ListBuffer
 
 
@@ -14,7 +14,11 @@ trait ParAnomalyDetector {
   def detect(ts: TimeSeries, es: ExecutorService, chunks: Int): Vector[Report] = {
     val tss = ts.split(chunks)
     val chunkSize = tss.head.length
-    tss.map(t => es.submit(() => this.map(t)))
+    tss.map(t => es.submit(new Callable[Reports] {
+      override def call(): ListBuffer[Report] = {
+        map(t)
+      }
+    }))
       .map(f => f.get())
       .zipWithIndex
       .map(e => {
@@ -23,7 +27,9 @@ trait ParAnomalyDetector {
         reports.toList.foreach(r => r.timeStep = r.timeStep + (i * chunkSize))
         reports
       })
-      .reduce(this.reduce).toList.toVector
+      .toArray
+      .reduce((r1, r2) => this.reduce(r1,r2))
+      .toVector
   }
 }
 
